@@ -7,7 +7,26 @@ from django.views.decorators.http import require_POST
 from django.shortcuts import get_object_or_404
 from .models import Image
 
-# Create your views here.
+
+@login_required
+def image_create(request):
+    if request.method == "POST":
+        form = ImageCreateForm(data=request.POST)
+        if form.is_valid():
+            new_item = form.save(commit=False)
+            new_item.user = request.user
+            new_item.save()
+            messages.success(request, "Image added successfully")
+
+            return redirect(new_item.get_absolute_url())
+    else:
+        form = ImageCreateForm(data=request.GET)
+
+    return render(
+        request,
+        "images/image/create.html",
+        {"section": "images", "form": form},
+    )
 
 
 def image_detail(request, id, slug):
