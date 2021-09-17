@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "social_django",
     "easy_thumbnails",
+    "actions.apps.ActionsConfig",
 ]
 
 MIDDLEWARE = [
