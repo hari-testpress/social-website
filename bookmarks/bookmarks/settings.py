@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 import environ
+from django.urls import reverse_lazy
 
 env = environ.Env()
 environ.Env.read_env()
@@ -119,6 +120,11 @@ AUTHENTICATION_BACKENDS = [
 ]
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
+
+
+ABSOLUTE_URL_OVERRIDES = {
+    "auth.user": lambda u: reverse_lazy("user_detail", args=[u.username])
+}
 
 LANGUAGE_CODE = "en-us"
 
