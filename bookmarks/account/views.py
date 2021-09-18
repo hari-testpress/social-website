@@ -9,6 +9,7 @@ from .forms import ProfileEditForm, UserEditForm, UserRegistrationForm
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
+from actions.utils import create_action
 
 
 @login_required
@@ -24,6 +25,7 @@ def register(request):
             new_user.set_password(user_form.cleaned_data["password"])
             new_user.save()
             Profile.objects.create(user=new_user)
+            create_action(new_user, "has created an account")
             return render(
                 request, "account/register_done.html", {"new_user": new_user}
             )
@@ -92,6 +94,7 @@ def user_follow(request):
                 Contact.objects.get_or_create(
                     user_from=request.user, user_to=user
                 )
+                create_action(request.user, "is following", user)
             else:
                 Contact.objects.filter(
                     user_from=request.user, user_to=user
