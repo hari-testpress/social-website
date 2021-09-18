@@ -10,11 +10,27 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib import messages
 from actions.utils import create_action
+from actions.models import Action
 
 
 @login_required
 def dashboard(request):
-    return render(request, "account/dashboard.html", {"section": "dashboard"})
+    # Display all actions by default
+    actions = Action.objects.exclude(user=request.user)
+    following_ids = request.user.following.values_list("id", flat=True)
+    if following_ids:
+        # If user is following others, retrieve only their actions
+        actions = actions.filter(user_id__in=following_ids)
+
+    actions = actions.select_related("user", "user__profile").prefetch_related(
+        "target"
+    )[:10]
+
+    return render(
+        request,
+        "account/dashboard.html",
+        {"section": "dashboard", "actions": actions},
+    )
 
 
 def register(request):
