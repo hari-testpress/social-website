@@ -14,7 +14,7 @@ import redis
 from django.conf import settings
 
 # connect to redis
-r = redis.Redis(
+redis_client = redis.Redis(
     host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB
 )
 
@@ -69,7 +69,7 @@ def image_list(request):
 
 def image_detail(request, id, slug):
     image = get_object_or_404(Image, id=id, slug=slug)
-    total_views = r.incr(f"image:{image.id}:views")
+    total_views = redis_client.incr(f"image:{image.id}:views")
     return render(
         request,
         "images/image/detail.html",
