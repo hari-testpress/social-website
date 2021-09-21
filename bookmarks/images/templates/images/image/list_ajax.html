@@ -5,7 +5,7 @@
     <a href="{{ image.get_absolute_url }}">
       {% thumbnail image.image 300x300 crop="smart" as img_thumbnail %}
       <a href="{{ image.get_absolute_url }}">
-        <img src="{{ im.url }}">
+        <img src="{{ img_thumbnail.url }}">
       </a>
     </a>
     <div class="info">
